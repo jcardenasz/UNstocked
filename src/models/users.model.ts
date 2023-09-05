@@ -1,15 +1,16 @@
 import mongoose from 'mongoose'
+import { IUser } from '../dtos/Iuser.dto'
 
-export interface IUser {
-  username: string
-  email: string
-  password: string
-}
+// export interface IUser {
+//   username: string
+//   email: string
+//   password: string
+// }
 
-export interface IUserSaved extends IUser {
-  createdAt: AudioTimestamp
-  updatedAt: AudioTimestamp
-}
+// export interface IUserSaved extends IUser {
+//   createdAt: AudioTimestamp
+//   updatedAt: AudioTimestamp
+// }
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -30,4 +31,5 @@ const userSchema = new mongoose.Schema({
 }, {
   timestamps: true
 })
-export default mongoose.model<IUserSaved>('User', userSchema)
+const UserModel = mongoose.model<IUser>('User', userSchema)
+export default UserModel
