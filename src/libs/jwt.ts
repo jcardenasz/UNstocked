@@ -6,7 +6,7 @@ export async function createJWT (payload: object): Promise<string | undefined> {
       payload,
       config.jwtSecret,
       {
-        expiresIn: '1d'
+        expiresIn: '1h'
       },
       (err, token) => {
         if (err != null) reject(err)

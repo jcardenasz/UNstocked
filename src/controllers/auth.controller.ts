@@ -5,6 +5,14 @@ class AuthController {
   public async register (req: Request, res: Response): Promise <Response> {
     return await authFacade.register(req, res)
   }
+
+  public async login (req: Request, res: Response): Promise <Response> {
+    return await authFacade.login(req, res)
+  }
+
+  public async logout (req: Request, res: Response): Promise <Response> {
+    return authFacade.logout(req, res)
+  }
 } export default new AuthController()
 
 // export const register = async (req: Request, res: Response): Promise<void> => {

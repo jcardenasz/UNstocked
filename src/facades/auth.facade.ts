@@ -1,6 +1,4 @@
 import { Request, Response } from 'express'
-// import jwt from 'jsonwebtoken'
-// import { Document } from 'mongoose'
 import bcrypt from 'bcrypt'
 
 import { IUser } from '../dtos/Iuser.dto'
@@ -29,9 +27,50 @@ class AuthFacade {
       id: userSaved.id,
       username: userSaved.username,
       email: userSaved.email
-    //   createdAt: userSaved.createdAt,
-    //   updatedAt: userSaved.updatedAt
+      // Mostrar todos los datos
+      // createdAt: userSaved,
+      // updatedAt: userSaved.updatedAt
     })
     return res
+  }
+
+  public async login (req: Request, res: Response): Promise< Response> {
+    try {
+      const { email, password } = req.body
+      const userFound = await UserModel.findOne({ email })
+
+      if (userFound == null) return res.status(400).json({ message: 'User not found - User or password incorrect ' })
+
+      const passwordFound = await bcrypt.compare(password, userFound.password)
+
+      if (!passwordFound) return res.status(400).json({ message: 'Password not found - User or password incorrect ' })
+
+      const token = await createJWT({ id: userFound.id, email: userFound.email })
+      res.cookie('token', token)
+
+      return res.json({
+        id: userFound.id,
+        username: userFound.username,
+        email: userFound.email
+        // createdAt: userFound.createdAt,
+        // updatedAt: userFound.updatedAt
+      })
+    } catch (error) {
+      return res.status(500).json({ message: error })
+    }
+  }
+
+  public logout (_req: Request, res: Response): Response {
+    try {
+      console.log('logout')
+      res.cookie('token', '', {
+        expires: new Date(0)
+      })
+      console.log('logout')
+      return res.status(200)
+    } catch (error) {
+      console.log(error)
+      return res.status(400)
+    }
   }
 } export default new AuthFacade()

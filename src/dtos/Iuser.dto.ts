@@ -6,3 +6,7 @@ export interface IUser {
   email: string
   password: string
 }
+export interface IUserSaved extends IUser {
+  createdAt: AudioTimestamp
+  updatedAt: AudioTimestamp
+}

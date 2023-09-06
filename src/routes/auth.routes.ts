@@ -2,9 +2,10 @@ import { Router } from 'express'
 import authController from '../controllers/auth.controller'
 
 const router = Router()
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
+// Return es promesa de objeto, y debe ser void
 router.post('/register', authController.register)
-// router.post('/login', login)
-// router.post('/logout', logout)
+router.post('/login', authController.login)
+// No funciona, se queda pensando
+router.post('/logout', authController.logout)
 
 export default router
