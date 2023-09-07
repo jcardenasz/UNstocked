@@ -60,17 +60,18 @@ class AuthFacade {
     }
   }
 
-  public logout (_req: Request, res: Response): Response {
-    try {
-      console.log('logout')
-      res.cookie('token', '', {
-        expires: new Date(0)
-      })
-      console.log('logout')
-      return res.status(200)
-    } catch (error) {
-      console.log(error)
-      return res.status(400)
-    }
+  public logout (req: Request, res: Response): Response {
+    const aux = req.body
+    console.log('', aux)
+    res.cookie('token', '', {
+      expires: new Date(0)
+    })
+    console.log('Logout')
+    return res.status(200).json({ message: 'Logout successfully' })
+  }
+
+  public profile (_req: Request, res: Response): Response {
+    console.log('Profile')
+    return res.status(200).json({ message: 'Profile' })
   }
 } export default new AuthFacade()
