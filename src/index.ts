@@ -1,6 +1,9 @@
-import app from './app'
-import { connectDB } from './dataBase'
+import { App } from './app';
+import { connectDB } from './dataBase';
+import config from './config/config';
 
-void connectDB()
-app.listen(app.get('port'))
-console.log('Server port ', app.get('port'))
+const app = new App();
+void connectDB();
+app.getApp().listen(config.port, () => {
+	console.log('Server port ', config.port);
+});

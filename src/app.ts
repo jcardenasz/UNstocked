@@ -1,24 +1,31 @@
-import express from 'express'
-import morgan from 'morgan'
-import router from './routes/auth.routes'
-import cors from 'cors'
-import cookieParser from 'cookie-parser'
+import express, { Application } from 'express';
+import morgan from 'morgan';
+import authrouter from './routes/auth.routes';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 
-const app = express()
 
-app.set('port', (process.env.PORT != null) || 4000)
+export class App {
+	private readonly app: Application;
+	constructor () {
+		this.app = express();
+		this.initMiddlewares();
+		this.initRoutes();
+	}
 
-app.use(morgan('dev'))
-app.use(cors())
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json())
-app.use(cookieParser())
+	private initMiddlewares (): void {
+		this.app.use(morgan('dev'));
+		this.app.use(cors());
+		this.app.use(express.urlencoded({ extended: false }));
+		this.app.use(express.json());
+		this.app.use(cookieParser());
+	}
 
-app.get('/', (_req, res) => {
-  console.log('Hola mundo')
-  res.send('Hello world ')
-})
+	private initRoutes (): void {
+		this.app.use('/api', authrouter);
+	}
 
-app.use('/api', router)
-
-export default app
+	public getApp (): Application {
+		return this.app;
+	}
+}

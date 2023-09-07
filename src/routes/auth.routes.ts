@@ -1,12 +1,13 @@
-import { Router } from 'express'
-import { authRequired } from '../middlewares/validateToken.middlewares'
-import authController from '../controllers/auth.controller'
+import { Router } from 'express';
+// import { authRequired } from '../middlewares/validateToken.middlewares'
+import asyncError from '../middlewares/asyncError.middleware';
+import authController from '../controllers/auth.controller';
 
-const router = Router()
+const authRouter = Router();
 // Return es promesa de objeto, y debe ser void
-router.post('/register', authController.register)
-router.post('/login', authController.login)
-router.post('/logout', authController.logout)
-router.get('/profile', authRequired, authController.profile)
+authRouter.post('/register', asyncError(authController.register));
+authRouter.post('/login', asyncError(authController.login));
+authRouter.post('/logout', authController.logout);
+authRouter.get('/profile', authController.profile);
 
-export default router
+export default authRouter;
