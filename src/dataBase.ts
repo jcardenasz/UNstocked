@@ -13,6 +13,6 @@ connection.once('open', () => {
 
 connection.on('error', (err) => {
 	console.log(err);
-	console.log('DataBase down');
-	process.exit(0);
+	// console.log('DataBase down');
+	throw new Error("DataBase down");
 });

@@ -9,7 +9,7 @@ class AuthFacade {
 	public async register (req: Request, res: Response): Promise<Response > {
 		const { username, email, password }: IUser = req.body;
 		const existingUser = await UserModel.findOne({ email });
-		if (existingUser !== null) res.status(500).send('User already exists');
+		if (existingUser !== null) return res.status(500).send('User already exists');
 
 		const salt = await bcrypt.genSalt(10);
 		const hashPassword = await bcrypt.hash(password, salt);
@@ -23,15 +23,11 @@ class AuthFacade {
 		const token = await createJWT({ id: userSaved.id, email: userSaved.email });
 		res.cookie('token', token);
 
-		res.json({
+		return res.json({
 			id: userSaved.id,
 			username: userSaved.username,
 			email: userSaved.email
-			// Mostrar todos los datos
-			// createdAt: userSaved,
-			// updatedAt: userSaved.updatedAt
 		});
-		return res;
 	}
 
 	public async login (req: Request, res: Response): Promise< Response> {
@@ -52,8 +48,6 @@ class AuthFacade {
 				id: userFound.id,
 				username: userFound.username,
 				email: userFound.email
-				// createdAt: userFound.createdAt,
-				// updatedAt: userFound.updatedAt
 			});
 		} catch (error) {
 			return res.status(500).json({ message: error });
@@ -71,7 +65,7 @@ class AuthFacade {
 	}
 
 	public profile (_req: Request, res: Response): Response {
-		console.log('Profile');
+		console.log("Bring profile");
 		return res.status(200).json({ message: 'Profile' });
 	}
 } export default new AuthFacade();

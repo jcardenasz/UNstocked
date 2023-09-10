@@ -30,7 +30,7 @@ module.exports = {
 		'@typescript-eslint'
 	],
 	'rules': {
-		indent: ['error', 'space'], // Indentación con tabulador
+		indent: ['error', 'tab'], // Indentación con tabulador
 		'@typescript-eslint/no-unused-vars': 'warn', // 'error' for production
 		eqeqeq: 'error', // Usar === en vez de ==
 		'no-unused-vars': 'error', // No dejar variables sin usar

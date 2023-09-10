@@ -3,11 +3,11 @@ import authFacade from '../facades/auth.facade';
 
 class AuthController {
 	public async register (req: Request, res: Response): Promise <Response> {
-		return await authFacade.register(req, res);
+		return authFacade.register(req, res);
 	}
 
-	public async login (req: Request, res: Response): Promise <Response> {
-		return await authFacade.login(req, res);
+	public  async login (req: Request, res: Response):  Promise<Response> {
+		return authFacade.login(req, res);
 	}
 
 	public logout (req: Request, res: Response): Response {

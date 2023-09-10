@@ -7,13 +7,13 @@ import cookieParser from 'cookie-parser';
 
 export class App {
 	private readonly app: Application;
-	constructor () {
+	constructor() {
 		this.app = express();
 		this.initMiddlewares();
 		this.initRoutes();
 	}
 
-	private initMiddlewares (): void {
+	private initMiddlewares(): void {
 		this.app.use(morgan('dev'));
 		this.app.use(cors());
 		this.app.use(express.urlencoded({ extended: false }));
@@ -21,11 +21,11 @@ export class App {
 		this.app.use(cookieParser());
 	}
 
-	private initRoutes (): void {
+	private initRoutes(): void {
 		this.app.use('/api', authrouter);
 	}
 
-	public getApp (): Application {
+	public getApp(): Application {
 		return this.app;
 	}
 }
