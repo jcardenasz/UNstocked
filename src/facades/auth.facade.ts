@@ -54,13 +54,10 @@ class AuthFacade {
 		}
 	}
 
-	public logout (req: Request, res: Response): Response {
-		const aux = req.body;
-		console.log('', aux);
+	public logout (_req: Request, res: Response): Response {
 		res.cookie('token', '', {
 			expires: new Date(0)
 		});
-		console.log('Logout');
 		return res.status(200).json({ message: 'Logout successfully' });
 	}
 
