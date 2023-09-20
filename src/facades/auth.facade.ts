@@ -20,8 +20,8 @@ class AuthFacade {
 		});
 		// servicio
 		const userSaved = await newUser.save();
-		const token = await createJWT({ id: userSaved.id, email: userSaved.email });
-		res.cookie('token', token);
+		const tokenLogin = await createJWT({ id: userSaved.id, email: userSaved.email });
+		res.cookie('token', tokenLogin);
 
 		return res.json({
 			id: userSaved.id,
