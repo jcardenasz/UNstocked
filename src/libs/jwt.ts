@@ -5,7 +5,7 @@ export async function createJWT (payload: object): Promise<string | undefined> {
 	const create: string | undefined = await new Promise((resolve, reject) => {
 		jwt.sign(
 			payload,
-			config.JWTSECRET,
+			config.JWT_SECRET,
 			{
 				expiresIn: '1h'
 			},
