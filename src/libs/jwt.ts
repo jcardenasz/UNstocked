@@ -1,4 +1,3 @@
-/* eslint-disable no-return-await */
 import jwt from 'jsonwebtoken';
 import config from '../config/config';
 export async function createJWT (payload: object): Promise<string | undefined> {
