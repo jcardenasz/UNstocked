@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 
-import { IUser } from '../dtos/Iuser.dto';
+import { IPayLoad, IUser } from '../dtos/Iuser.dto';
 import UserModel from '../models/users.model';
-import { createJWT } from '../libs/jwt';
+import {  createRefreshToken as createRefreshToken, decodedToken, encodedPassword, setCookies } from '../services/auth.services';
 
 class AuthFacade {
 	public async register (req: Request, res: Response): Promise<Response > {
@@ -11,17 +11,16 @@ class AuthFacade {
 		const existingUser = await UserModel.findOne({ email });
 		if (existingUser !== null) return res.status(500).send('User already exists');
 
-		const salt = await bcrypt.genSalt(10);
-		const hashPassword = await bcrypt.hash(password, salt);
+		const hashPassword = await encodedPassword(password, res);
 		const newUser = new UserModel({
 			username,
 			email,
 			password: hashPassword
 		});
-		// servicio
+
 		const userSaved = await newUser.save();
-		const tokenLogin = await createJWT({ id: userSaved.id, email: userSaved.email });
-		res.cookie('token', tokenLogin);
+		const payload:IPayLoad = { id: userSaved._id, email: userSaved.email };
+		await setCookies(payload, res);
 
 		return res.json({
 			id: userSaved.id,
@@ -40,10 +39,8 @@ class AuthFacade {
 			const passwordFound = await bcrypt.compare(password, userFound.password);
 
 			if (!passwordFound) return res.status(400).json({ message: 'Password not found - User or password incorrect ' });
-
-			const token = await createJWT({ id: userFound.id, email: userFound.email });
-			res.cookie('token', token);
-
+			const payload:IPayLoad = { id: userFound._id, email: userFound.email };
+			await setCookies(payload,res);
 			return res.json({
 				id: userFound.id,
 				username: userFound.username,
@@ -58,11 +55,26 @@ class AuthFacade {
 		res.cookie('token', '', {
 			expires: new Date(0)
 		});
+		res.cookie('refreshToken', '', {
+			expires: new Date(0)
+		});
 		return res.status(200).json({ message: 'Logout successfully' });
 	}
 
 	public profile (_req: Request, res: Response): Response {
-		console.log("Bring profile");
 		return res.status(200).json({ message: 'Profile' });
+	}
+
+	public async refreshToken (req: Request, res: Response): Promise<Response> {
+		try{
+			const id  = decodedToken(req);
+			const user = await UserModel.findById(id);
+			if (user === null) return res.status(401).json({ message: 'User not found' });
+			const tokenRefresh = await createRefreshToken({ id: user.id, email: user.email });
+			res.cookie('refreshToken', tokenRefresh);
+			return res.status(200).json({ message: 'Token refresh' });
+		}catch(error){
+			return res.status(500).json({ message: error });
+		}
 	}
 } export default new AuthFacade();
