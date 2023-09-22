@@ -62,7 +62,6 @@ class AuthFacade {
 	}
 
 	public profile (_req: Request, res: Response): Response {
-		console.log("Bring profile");
-		return res.status(200).json({ message: 'Profile' });
+		return res.status(200).json({ message: 'Bring profile' });
 	}
 } export default new AuthFacade();
