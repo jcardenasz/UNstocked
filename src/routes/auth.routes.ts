@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { authRequired } from '../middlewares/validateUser.middlewares';
-// import asyncError from "../middlewares/asyncError.middleware";
 import authController from "../controllers/auth.controller";
 import { validateSchema } from "../middlewares/validator.middleware";
 import { loginSchema, registerSchema,  } from "../schemas/auth.schema";
@@ -11,5 +10,6 @@ authRouter.post("/register", validateSchema(registerSchema),authController.regis
 authRouter.post("/login",validateSchema(loginSchema),authController.login);
 authRouter.post("/logout", authController.logout);
 authRouter.get("/profile", authRequired,authController.profile);
+authRouter.post("/refreshToken", authController.refreshToken);
 
 export default authRouter;

@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
-import config from './config/config';
+import {Config} from './config/config';
 
+const config = new Config;
 export const connectDB = async (): Promise<void> => {
-	await mongoose.connect(config.URI);
+	await mongoose.connect(config.getURI());
 	console.log('DB is connected');
 };
 

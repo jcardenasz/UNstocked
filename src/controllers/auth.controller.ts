@@ -15,7 +15,10 @@ class AuthController {
 	}
 
 	public profile (req: Request, res: Response): Response {
-		console.log(req.user);
 		return authFacade.profile(req, res);
+	}
+
+	public refreshToken (req: Request, res: Response): Promise<Response> {
+		return authFacade.refreshToken(req, res);
 	}
 } export default new AuthController();
