@@ -1,17 +1,17 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcrypt';
-
 import { IPayLoad, IUser } from '../dtos/Iuser.dto';
 import UserModel from '../models/users.model';
-import {  createRefreshToken as createRefreshToken, decodedToken, encodedPassword, setCookies } from '../services/auth.services';
+import { AuthServices  } from '../services/auth.services';
 
 class AuthFacade {
+	private readonly authServices = new AuthServices;
 	public async register (req: Request, res: Response): Promise<Response > {
+
 		const { username, email, password }: IUser = req.body;
 		const existingUser = await UserModel.findOne({ email });
 		if (existingUser !== null) return res.status(500).send('User already exists');
 
-		const hashPassword = await encodedPassword(password, res);
+		const hashPassword = await this.authServices.encodedPassword(password, res);
 		const newUser = new UserModel({
 			username,
 			email,
@@ -20,7 +20,7 @@ class AuthFacade {
 
 		const userSaved = await newUser.save();
 		const payload:IPayLoad = { id: userSaved._id, email: userSaved.email };
-		await setCookies(payload, res);
+		await this.authServices.setCookies(payload, res);
 
 		return res.json({
 			id: userSaved.id,
@@ -36,11 +36,11 @@ class AuthFacade {
 
 			if (userFound === null) return res.status(400).json({ message: 'User not found - User or password incorrect ' });
 
-			const passwordFound = await bcrypt.compare(password, userFound.password);
+			const passwordFound = await this.authServices.compareCredential(password, userFound.password);
 
-			if (!passwordFound) return res.status(400).json({ message: 'Password not found - User or password incorrect ' });
+			if (!passwordFound ) return res.status(400).json({ message: 'Password not found - User or password incorrect ' });
 			const payload:IPayLoad = { id: userFound._id, email: userFound.email };
-			await setCookies(payload,res);
+			await this.authServices.setCookies(payload,res);
 			return res.json({
 				id: userFound.id,
 				username: userFound.username,
@@ -67,10 +67,10 @@ class AuthFacade {
 
 	public async refreshToken (req: Request, res: Response): Promise<Response> {
 		try{
-			const id  = decodedToken(req);
+			const id  = this.authServices.decodedToken(req);
 			const user = await UserModel.findById(id);
 			if (user === null) return res.status(401).json({ message: 'User not found' });
-			const tokenRefresh = await createRefreshToken({ id: user.id, email: user.email });
+			const tokenRefresh = await this.authServices.createRefreshToken({ id: user.id, email: user.email });
 			res.cookie('refreshToken', tokenRefresh);
 			return res.status(200).json({ message: 'Token refresh' });
 		}catch(error){

@@ -15,7 +15,6 @@ class AuthController {
 	}
 
 	public profile (req: Request, res: Response): Response {
-		console.log(req.user);
 		return authFacade.profile(req, res);
 	}
 
