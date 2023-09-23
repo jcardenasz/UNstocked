@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import UserModel from '../models/users.model';
 import { AuthServices } from '../services/auth.services';
+// import { IUserSaved } from '../dtos/Iuser.dto';
 
 const authServices = new AuthServices;
 export const authRequired = async (req: Request, res: Response, next: NextFunction): Promise<Response | void>=> {

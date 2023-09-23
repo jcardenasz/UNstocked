@@ -5,7 +5,7 @@ export interface IPayLoad{
   email: string
 }
 export interface IUser {
-  _id?: ObjectId
+  id?: ObjectId
   username: string
   email: string
   password: string

@@ -20,5 +20,5 @@ const userSchema = new mongoose.Schema({
 }, {
 	timestamps: true
 });
-const UserModel = mongoose.model<IUserSaved>('User', userSchema);
+const UserModel = mongoose.model<IUserSaved>('users', userSchema);
 export default UserModel;
