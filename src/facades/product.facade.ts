@@ -23,7 +23,7 @@ class ProductFacade {
 			stock,
 			picture,
 			tags,
-			user: currentUser?._id ?? undefined
+			user: "currentUser?._id ?? undefined"
 		});
 		const productSaved = await newProduct.save();
 		return res.json(productSaved);

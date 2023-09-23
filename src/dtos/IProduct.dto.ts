@@ -7,7 +7,7 @@ export interface IProduct {
   stock: number
   picture: string
   tags: string[]
-  user: ObjectId
+  userId: ObjectId
 }
 export interface IProductSaved extends IProduct {
   createdAt: AudioTimestamp
