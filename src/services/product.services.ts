@@ -1,7 +1,7 @@
 import { IUser } from "../dtos/Iuser.dto";
 import { Request } from "express";
 import ProductModel from "../models/products.model";
-// import { IProductSaved } from "../dtos/IProduct.dto";
+import { IProductSaved } from "../dtos/IProduct.dto";
 
 export class ProductServices{
 	public validateUser(req: Request): IUser | null {
@@ -9,12 +9,12 @@ export class ProductServices{
 		if (currentUser === undefined) return null;
 		return currentUser;
 	}
-	public async findProduct(req: Request, currentUser:IUser): Promise< any| null> {
+	public async findProduct(req: Request, currentUser:IUser): Promise<IProductSaved | null> {
 		const product = await ProductModel.find({
 			_id: req.params.id,
 			userId: currentUser.id
 		});
 		if (product === null || product.length === 0 ) return null;
-		return product ;
+		return product[0];
 	}
 }

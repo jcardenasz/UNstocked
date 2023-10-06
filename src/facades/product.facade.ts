@@ -11,7 +11,7 @@ class ProductFacade {
 
 		const products = await ProductModel.find({
 			userId: currentUser.id
-		});//).populate();
+		});
 
 		return res.json(products);
 	}
@@ -55,9 +55,8 @@ class ProductFacade {
 		const product = await this.productServices.findProduct(req, currentUser);
 		if (product === null) return res.status(500).send('Product not found');
 
-		const deleteProduct = await ProductModel.findByIdAndDelete(req.params.id);
-		return res.json(deleteProduct);
-		// return res.status(204);
+		await ProductModel.deleteOne(product);
+		return res.status(200);
 	}
 
 	public async updateProduct (req: Request, res: Response):Promise<Response> {
@@ -68,7 +67,7 @@ class ProductFacade {
 		const product = await this.productServices.findProduct(req, currentUser);
 		if (product === null) return res.status(500).send('Product not found');
 
-		const existingProduct = await ProductModel.findByIdAndUpdate(req.params.id,{
+		const existingProduct = await ProductModel.updateOne(product,{
 			name,
 			description,
 			stock,
@@ -79,7 +78,7 @@ class ProductFacade {
 			new: true
 		});
 		if (existingProduct === null) return res.status(500).send('Product not found');
-		return res.json(existingProduct);
+		return res.status(200);
 	}
 
 } export default new ProductFacade();
