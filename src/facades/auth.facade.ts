@@ -19,7 +19,7 @@ class AuthFacade {
 		});
 
 		const userSaved = await newUser.save();
-		const payload:IPayLoad = { id: userSaved._id, email: userSaved.email };
+		const payload:IPayLoad = { id: userSaved.id, email: userSaved.email };
 		await this.authServices.setCookies(payload, res);
 
 		return res.json({
@@ -39,7 +39,7 @@ class AuthFacade {
 			const passwordFound = await this.authServices.compareCredential(password, userFound.password);
 
 			if (!passwordFound ) return res.status(400).json({ message: 'Password not found - User or password incorrect ' });
-			const payload:IPayLoad = { id: userFound._id, email: userFound.email };
+			const payload:IPayLoad = { id: userFound.id, email: userFound.email };
 			await this.authServices.setCookies(payload,res);
 			return res.json({
 				id: userFound.id,
@@ -62,7 +62,7 @@ class AuthFacade {
 	}
 
 	public profile (_req: Request, res: Response): Response {
-		return res.status(200).json({ message: 'Profile' });
+		return res.status(200).json({ message: 'Bring profile' });
 	}
 
 	public async refreshToken (req: Request, res: Response): Promise<Response> {
