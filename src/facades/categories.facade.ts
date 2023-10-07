@@ -1,8 +1,5 @@
 import { Request, Response } from 'express';
 import CategoryModel from '../models/categories.model';
-// import ProductModel from '../models/products.model';
-// import { IProduct } from '../dtos/IProduct.dto';
-// import CategoryModel from '../models/categories.model';
 import { CategoryServices } from '../services/category.services';
 import { ICategories } from '../dtos/categories.dto';
 class categoriesFacade {
