@@ -1,20 +1,20 @@
 import { IUser } from "../dtos/Iuser.dto";
 import { Request } from "express";
-import ProductModel from "../models/products.model";
+import CategoryModel from "../models/categories.model"; "../models/categories.model";
 // import { IProductSaved } from "../dtos/IProduct.dto";
 
-export class ProductServices{
+export class CategoryServices{
 	public validateUser(req: Request): IUser | null {
 		const currentUser: IUser | undefined = req.user as IUser;
 		if (currentUser === undefined) return null;
 		return currentUser;
 	}
-	public async findProduct(req: Request, currentUser:IUser): Promise< any |null> {
-		const product = await ProductModel.find({
+	public async findCategory(req: Request, currentUser:IUser): Promise< any| null> {
+		const category = await CategoryModel.find({
 			_id: req.params.id,
 			userId: currentUser.id
 		});
-		if (product === null || product.length === 0 ) return null;
-		return product ;
+		if (category === null || category.length === 0 ) return null;
+		return category ;
 	}
 }
