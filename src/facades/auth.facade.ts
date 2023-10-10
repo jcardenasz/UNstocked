@@ -77,4 +77,11 @@ class AuthFacade {
 			return res.status(500).json({ message: error });
 		}
 	}
+
+	public async forgotPassword (req: Request, res:Response): Promise<Response> {
+		const {email} = req.body;
+		const userFound = await UserModel.findOne({ email });
+		if (userFound === null) return res.status(400).json({ message: 'User not found' });
+		return email;
+	}
 } export default new AuthFacade();
