@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
-import config from './config/config';
+import {Config} from './config/config';
 
+const config = new Config;
 export const connectDB = async (): Promise<void> => {
-	await mongoose.connect(config.DB.URI);
+	await mongoose.connect(config.getURI());
 	console.log('DB is connected');
 };
 
@@ -13,6 +14,5 @@ connection.once('open', () => {
 
 connection.on('error', (err) => {
 	console.log(err);
-	// console.log('DataBase down');
 	throw new Error("DataBase down");
 });

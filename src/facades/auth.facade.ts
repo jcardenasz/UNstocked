@@ -1,27 +1,27 @@
 import { Request, Response } from 'express';
-import bcrypt from 'bcrypt';
-
-import { IUser } from '../dtos/Iuser.dto';
+import { IPayLoad, IUser } from '../dtos/Iuser.dto';
 import UserModel from '../models/users.model';
-import { createJWT } from '../libs/jwt';
+import { AuthServices  } from '../services/auth.services';
+import { MailerService } from '../services/mailer.services';
 
 class AuthFacade {
+	private readonly authServices = new AuthServices;
 	public async register (req: Request, res: Response): Promise<Response > {
+
 		const { username, email, password }: IUser = req.body;
 		const existingUser = await UserModel.findOne({ email });
 		if (existingUser !== null) return res.status(500).send('User already exists');
 
-		const salt = await bcrypt.genSalt(10);
-		const hashPassword = await bcrypt.hash(password, salt);
+		const hashPassword = await this.authServices.encodedPassword(password, res);
 		const newUser = new UserModel({
 			username,
 			email,
 			password: hashPassword
 		});
-		// servicio
+
 		const userSaved = await newUser.save();
-		const token = await createJWT({ id: userSaved.id, email: userSaved.email });
-		res.cookie('token', token);
+		const payload:IPayLoad = { id: userSaved.id, email: userSaved.email };
+		await this.authServices.setCookies(payload, res);
 
 		return res.json({
 			id: userSaved.id,
@@ -37,13 +37,11 @@ class AuthFacade {
 
 			if (userFound === null) return res.status(400).json({ message: 'User not found - User or password incorrect ' });
 
-			const passwordFound = await bcrypt.compare(password, userFound.password);
+			const passwordFound = await this.authServices.compareCredential(password, userFound.password);
 
-			if (!passwordFound) return res.status(400).json({ message: 'Password not found - User or password incorrect ' });
-
-			const token = await createJWT({ id: userFound.id, email: userFound.email });
-			res.cookie('token', token);
-
+			if (!passwordFound ) return res.status(400).json({ message: 'Password not found - User or password incorrect ' });
+			const payload:IPayLoad = { id: userFound.id, email: userFound.email };
+			await this.authServices.setCookies(payload,res);
 			return res.json({
 				id: userFound.id,
 				username: userFound.username,
@@ -58,11 +56,39 @@ class AuthFacade {
 		res.cookie('token', '', {
 			expires: new Date(0)
 		});
+		res.cookie('refreshToken', '', {
+			expires: new Date(0)
+		});
 		return res.status(200).json({ message: 'Logout successfully' });
 	}
 
 	public profile (_req: Request, res: Response): Response {
-		console.log("Bring profile");
-		return res.status(200).json({ message: 'Profile' });
+		return res.status(200).json({ message: 'Bring profile' });
+	}
+
+	public async refreshToken (req: Request, res: Response): Promise<Response> {
+		try{
+			const id  = this.authServices.decodedToken(req);
+			const user = await UserModel.findById(id);
+			if (user === null) return res.status(401).json({ message: 'User not found' });
+			const tokenRefresh = await this.authServices.createRefreshToken({ id: user.id, email: user.email });
+			res.cookie('refreshToken', tokenRefresh);
+			return res.status(200).json({ message: 'Token refresh' });
+		}catch(error){
+			return res.status(500).json({ message: error });
+		}
+	}
+
+	public async forgotPassword (req: Request, res:Response): Promise<Response> {
+		const {email} = req.body;
+		const userFound = await UserModel.findOne({ email });
+		if (userFound === null) return res.status(400).json({ message: 'User not found' });
+		const payload:IPayLoad = { id: userFound.id, email: userFound.email };
+		const passwordChangeKey = this.authServices.createToken(payload);
+
+		//send email with password change link.
+		const mailerService = new MailerService;
+		await mailerService.sendEmail(userFound.email, passwordChangeKey);
+		return res.status(200).json({message: 'hola mundo'});
 	}
 } export default new AuthFacade();
