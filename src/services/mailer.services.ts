@@ -3,12 +3,15 @@ import nodemailer from 'nodemailer';
 export class MailerService {
 	public async sendEmail (email:string,token:Promise<string|undefined>): Promise<void> {
 		const transporter = nodemailer.createTransport({
-			host: 'smtp.gmail.com',
-			port: 587,
-			secure: false,
+			host:'smtp.gmail.com',
+			port: 465,
+			secure: true,
 			auth: {
 				user: process.env.EMAIL,
-				pass: process.env.EMAIL_PASSWORD
+				pass: process.env.APP_PASSWORD
+			},
+			tls: {//esto es machete para que no llore por tls
+				rejectUnauthorized: false
 			}
 		});
 		const mailOptions = {
