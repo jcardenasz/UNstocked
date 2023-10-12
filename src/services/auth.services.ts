@@ -74,4 +74,22 @@ export class AuthServices {
 		const passwordFound = await bcrypt.compare(password, userFoundPassword);
 		return passwordFound;
 	}
+
+	public async createForgotPasswordToken (payload: object): Promise<string | undefined> {
+		const create: string | undefined = await new Promise((resolve, reject) => {
+			jwt.sign(
+				payload,
+				this.config.getFORGOT_PASSWORD_KEY(),
+				{
+					expiresIn: '10m'
+				},
+				(err, token) => {
+					if (err !== null) reject(err);
+					resolve(token);
+				});
+		}
+		);
+		return create;
+	}
+
 }
