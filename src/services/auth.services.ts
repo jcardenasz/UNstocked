@@ -5,6 +5,7 @@ import { IPayLoad } from '../dtos/IPayload.dto';
 import { ObjectId } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { IPayLoadToken } from '../dtos/IPayload.dto';
+import { ServerError } from '../errors/server.error';
 
 export class AuthServices {
 	private readonly config = new Config;
@@ -42,19 +43,19 @@ export class AuthServices {
 		try{
 			// const refreshToken: string | undefined  = req.cookies.refreshToken;
 			const token: string | undefined  = req.headers.authorization;
-			if (token === undefined) throw new Error("Token undefined");
+			if (token === undefined) throw new ServerError("Token undefined",401);
 			const parts = token.split(' ');
-			if (parts.length !== 2 || parts[0] !== "Bearer") throw new Error("Not word Bearer in token");
+			if (parts.length !== 2 || parts[0] !== "Bearer") throw new ServerError("Not word Bearer in token",401);
 			const decoded = jwt.verify(parts[1],this.config.getJWT_SECRET(),{
 				issuer: this.config.getJWT_ISSUER(),
 				audience: this.config.getJWT_AUDIENCE()
 			}) as IPayLoadToken;
-			if (decoded.type !== "access") new Error("Token not valid");
+			if (decoded.type !== "access") new ServerError("Token not valid",401);
 			const id : ObjectId = decoded.id;
-			if (id === null) throw new Error("No id");
+			if (id === null) throw new ServerError("No id",401);
 			return id;
 		}catch(error){
-			throw new Error(String(error));
+			throw new ServerError("Not possible decoded token",401);
 		}
 	}
 

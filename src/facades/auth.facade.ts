@@ -3,6 +3,7 @@ import { IUser, IUserSaved } from '../dtos/Iuser.dto';
 import UserModel from '../models/users.model';
 import { AuthServices  } from '../services/auth.services';
 import { IPayLoad } from '../dtos/IPayload.dto';
+import { ServerError } from '../errors/server.error';
 
 class AuthFacade {
 	private readonly authServices = new AuthServices;
@@ -10,7 +11,7 @@ class AuthFacade {
 
 		const { username, email, password }: IUser = req.body;
 		const existingUser = await UserModel.findOne({ email });
-		if (existingUser !== null) return res.status(500).send('User already exists');
+		if (existingUser !== null) throw new ServerError("User already exists",500);// res.status(500).send('User already exists');
 
 		const hashPassword = await this.authServices.encodedPassword(password, res);
 		const newUser = new UserModel({
@@ -35,11 +36,11 @@ class AuthFacade {
 			const { email, password } = req.body;
 			const userFound = await UserModel.findOne({ email });
 
-			if (userFound === null) return res.status(400).json({ message: 'User not found - User or password incorrect ' });
+			if (userFound === null) throw new ServerError('User not found - User or password incorrect ',400);// res.status(400).json({ message: 'User not found - User or password incorrect ' });
 
 			const passwordFound = await this.authServices.compareCredential(password, userFound.password);
 
-			if (!passwordFound ) return res.status(400).json({ message: 'Password not found - User or password incorrect ' });
+			if (!passwordFound ) throw new ServerError('Password not found - User or password incorrect ' , 400);//return res.status(400).json({ message: 'Password not found - User or password incorrect ' });
 			const payload:IPayLoad = { id: userFound.id, email: userFound.email , type: 'access'};
 			await this.authServices.setTokens(payload, req);
 
@@ -51,7 +52,8 @@ class AuthFacade {
 				tokenRefresh: req.headers['x-token']
 			});
 		} catch (error) {
-			return res.status(500).json({ message: error });
+			throw new ServerError(String(error),500);
+			// return res.status(500).json({ message: error });
 		}
 	}
 
@@ -63,7 +65,7 @@ class AuthFacade {
 
 	public profile (req: Request , res:Response): Response  {
 		const user = req.user as IUserSaved;
-		if (!user.id) throw new Error('User ID not found');
+		if (!user.id) throw new ServerError('User ID not found',401);
 		return res.json({
 			id: user.id.toString(),
 			username: user.username,
@@ -74,7 +76,7 @@ class AuthFacade {
 
 	public async refreshToken (req: Request, res: Response): Promise<Response> {
 		const user = req.user as IUserSaved;
-		if (user === null || user.id === undefined) throw res.status(401).json({ message: 'User not found' });
+		if (user === null || user.id === undefined) throw new ServerError ('User not found',401); //res.status(401).json({ message: 'User not found' });
 		const tokenAccess =  await this.authServices.createToken({ id: user.id, email: user.email, type: 'access' });
 		const tokenRefresh =  await this.authServices.createToken({ id: user.id, email: user.email, type: 'refresh' });
 		return res.status(200).json({
