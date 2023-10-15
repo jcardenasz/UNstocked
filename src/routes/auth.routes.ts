@@ -8,8 +8,8 @@ const authRouter = Router();
 
 authRouter.post("/register", validateSchema(registerSchema),authController.register);
 authRouter.post("/login",validateSchema(loginSchema),authController.login);
-authRouter.post("/logout", authController.logout);
-authRouter.get("/profile", authRequired,authController.profile);
-authRouter.post("/refreshToken", authController.refreshToken);
+authRouter.post("/logout", authRequired("refresh"), authController.logout);
+authRouter.get("/profile", authRequired("access"),authController.profile);
+authRouter.get("/refreshToken", authRequired("refresh"), authController.refreshToken);
 
 export default authRouter;

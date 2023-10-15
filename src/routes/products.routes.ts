@@ -6,10 +6,10 @@ import { productSchema } from "../schemas/product.schema";
 
 const productRouter = Router();
 
-productRouter.get("/",authRequired,productController.getProducts);
-productRouter.get("/:id",authRequired,productController.getProduct);
-productRouter.post("/",authRequired,validateSchema(productSchema),productController.createProduct);
-productRouter.delete("/:id",authRequired,productController.deleteProduct);
-productRouter.put("/:id",authRequired,validateSchema(productSchema),productController.updateProduct);
+productRouter.get("/",authRequired("refresh"),productController.getProducts);
+productRouter.get("/:id",authRequired("refresh"),productController.getProduct);
+productRouter.post("/",authRequired("refresh"),validateSchema(productSchema),productController.createProduct);
+productRouter.delete("/:id",authRequired("refresh"),productController.deleteProduct);
+productRouter.put("/:id",authRequired("refresh"),validateSchema(productSchema),productController.updateProduct);
 
 export default productRouter;

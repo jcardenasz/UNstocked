@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { IPayLoad, IUser } from '../dtos/Iuser.dto';
+import { IUser, IUserSaved } from '../dtos/Iuser.dto';
 import UserModel from '../models/users.model';
 import { AuthServices  } from '../services/auth.services';
+import { IPayLoad } from '../dtos/IPayload.dto';
 
 class AuthFacade {
 	private readonly authServices = new AuthServices;
@@ -19,7 +20,7 @@ class AuthFacade {
 		});
 
 		const userSaved = await newUser.save();
-		const payload:IPayLoad = { id: userSaved.id, email: userSaved.email };
+		const payload:IPayLoad = { id: userSaved.id, email: userSaved.email , type: 'access'};
 		await this.authServices.setCookies(payload, res);
 
 		return res.json({
@@ -39,42 +40,48 @@ class AuthFacade {
 			const passwordFound = await this.authServices.compareCredential(password, userFound.password);
 
 			if (!passwordFound ) return res.status(400).json({ message: 'Password not found - User or password incorrect ' });
-			const payload:IPayLoad = { id: userFound.id, email: userFound.email };
-			await this.authServices.setCookies(payload,res);
+			const payload:IPayLoad = { id: userFound.id, email: userFound.email , type: 'access'};
+			await this.authServices.setTokens(payload, req);
+
 			return res.json({
 				id: userFound.id,
 				username: userFound.username,
-				email: userFound.email
+				email: userFound.email,
+				tokenAccess: req.headers.authorization,
+				tokenRefresh: req.headers['x-token']
 			});
 		} catch (error) {
 			return res.status(500).json({ message: error });
 		}
 	}
 
-	public logout (_req: Request, res: Response): Response {
-		res.cookie('token', '', {
-			expires: new Date(0)
-		});
-		res.cookie('refreshToken', '', {
-			expires: new Date(0)
-		});
+	public logout (req: Request, res: Response): Response {
+		req.headers.authorization = "";
+		req.headers['x-token'] = "";
 		return res.status(200).json({ message: 'Logout successfully' });
 	}
 
-	public profile (_req: Request, res: Response): Response {
-		return res.status(200).json({ message: 'Bring profile' });
+	public profile (req: Request , res:Response): Response  {
+		const user = req.user as IUserSaved;
+		if (!user.id) throw new Error('User ID not found');
+		return res.json({
+			id: user.id.toString(),
+			username: user.username,
+			email: user.email
+		});
 	}
 
+
 	public async refreshToken (req: Request, res: Response): Promise<Response> {
-		try{
-			const id  = this.authServices.decodedToken(req);
-			const user = await UserModel.findById(id);
-			if (user === null) return res.status(401).json({ message: 'User not found' });
-			const tokenRefresh = await this.authServices.createRefreshToken({ id: user.id, email: user.email });
-			res.cookie('refreshToken', tokenRefresh);
-			return res.status(200).json({ message: 'Token refresh' });
-		}catch(error){
-			return res.status(500).json({ message: error });
-		}
+		console.log("Hola mundo");
+		const user = req.user as IUserSaved;
+		if (user === null || user.id === undefined) throw res.status(401).json({ message: 'User not found' });
+		console.log(user);
+		const tokenAccess =  await this.authServices.createToken({ id: user.id, email: user.email, type: 'access' });
+		const tokenRefresh =  await this.authServices.createToken({ id: user.id, email: user.email, type: 'refresh' });
+		return res.status(200).json({
+			tokenAccess,
+			tokenRefresh
+		});
 	}
 } export default new AuthFacade();

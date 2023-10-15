@@ -14,8 +14,8 @@ class AuthController {
 		return authFacade.logout(req, res);
 	}
 
-	public profile (req: Request, res: Response): Response {
-		return authFacade.profile(req, res);
+	public profile (req: Request,res:Response): Response {
+		return authFacade.profile(req , res);
 	}
 
 	public refreshToken (req: Request, res: Response): Promise<Response> {
