@@ -73,10 +73,8 @@ class AuthFacade {
 
 
 	public async refreshToken (req: Request, res: Response): Promise<Response> {
-		console.log("Hola mundo");
 		const user = req.user as IUserSaved;
 		if (user === null || user.id === undefined) throw res.status(401).json({ message: 'User not found' });
-		console.log(user);
 		const tokenAccess =  await this.authServices.createToken({ id: user.id, email: user.email, type: 'access' });
 		const tokenRefresh =  await this.authServices.createToken({ id: user.id, email: user.email, type: 'refresh' });
 		return res.status(200).json({
