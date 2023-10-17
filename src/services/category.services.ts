@@ -15,6 +15,7 @@ export class CategoryServices{
 			userId: currentUser.id
 		});
 		if (category === null || category.length === 0 ) return null;
+		console.log(category);
 		return category ;
 	}
 }

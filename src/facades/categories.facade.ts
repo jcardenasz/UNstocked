@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import CategoryModel from '../models/categories.model';
 import { CategoryServices } from '../services/category.services';
-import { ICategories } from '../dtos/categories.dto';
+import { ICategories } from '../dtos/Icategories.dto';
 class categoriesFacade {
 	private readonly categoryServices = new CategoryServices();
 	public async getCategories (req: Request, res: Response): Promise <Response> {
@@ -24,7 +24,7 @@ class categoriesFacade {
 			userId: currentUser.id,
 			name
 		});
-		if (category !== null && category.length !== 0) return res.status(500).send('Product already exists');
+		if (category !== null && category.length !== 0) return res.status(500).send('Category already exists');
 
 		const newCategory = new CategoryModel({
 			name,
@@ -40,7 +40,7 @@ class categoriesFacade {
 		if (currentUser === null) return res.status(401).send('Unauthorized');
 
 		const category = await this.categoryServices.findCategory(req, currentUser);
-		if (category === null) return res.status(500).send('Product not found');
+		if (category === null) return res.status(500).send('Category not found');
 
 		return res.json(category);
 	}
@@ -50,9 +50,10 @@ class categoriesFacade {
 		if (currentUser === null) return res.status(401).send('Unauthorized');
 
 		const category = await this.categoryServices.findCategory(req, currentUser);
-		if (category === null) return res.status(500).send('Product not found');
+		if (category === null) return res.status(500).send('Category not found');
+		// req.params.id = category._id;
 
-		const deleteCategory = await CategoryModel.findByIdAndDelete(req.params.id);
+		const deleteCategory = await CategoryModel.deleteOne({_id: req.params.id});
 		return res.json(deleteCategory);
 		// return res.status(204);
 	}
@@ -63,16 +64,16 @@ class categoriesFacade {
 		if (currentUser === null) return res.status(401).send('Unauthorized');
 
 		const category = await this.categoryServices.findCategory(req, currentUser);
-		if (category === null) return res.status(500).send('Product not found');
+		if (category === null) return res.status(500).send('Category not found');
 
-		const existingCategory = await CategoryModel.findByIdAndUpdate(req.params.id,{
+		const existingCategory = await CategoryModel.updateOne({_id:req.params.id},{
 			name,
 			description,
 			userId: currentUser.id
 		},{
 			new: true
 		});
-		if (existingCategory === null) return res.status(500).send('Product not found');
+		if (existingCategory === null) return res.status(500).send('Category not found');
 		return res.json(existingCategory);
 	}
 

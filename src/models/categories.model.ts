@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { ICategoriesSaved } from '../dtos/categories.dto';
+import { ICategoriesSaved } from '../dtos/Icategories.dto';
 
 
 const categorySchema = new mongoose.Schema({

@@ -55,7 +55,7 @@ class ProductFacade {
 		const product = await this.productServices.findProduct(req, currentUser);
 		if (product === null) return res.status(500).send('Product not found');
 
-		const deleteProduct = await ProductModel.findByIdAndDelete(req.params.id);
+		const deleteProduct = await ProductModel.deleteOne({_id: req.params.id});
 		return res.json(deleteProduct);
 		// return res.status(204);
 	}
@@ -68,7 +68,7 @@ class ProductFacade {
 		const product = await this.productServices.findProduct(req, currentUser);
 		if (product === null) return res.status(500).send('Product not found');
 
-		const existingProduct = await ProductModel.findByIdAndUpdate(req.params.id,{
+		const existingProduct = await ProductModel.updateOne({_id: req.params.id},{
 			name,
 			description,
 			stock,
