@@ -13,7 +13,8 @@ class AuthFacade {
 		const existingUser = await UserModel.findOne({ email });
 		if (existingUser !== null) throw new ServerError("User already exists",500);// res.status(500).send('User already exists');
 
-		const hashPassword = await this.authServices.encodedPassword(password, res);
+		const hashPassword = await this.authServices.encodedPassword(password);
+		if (hashPassword === null) throw res.status(500).json({ message: 'Error in hash password'});
 		const newUser = new UserModel({
 			username,
 			email,
@@ -22,7 +23,8 @@ class AuthFacade {
 
 		const userSaved = await newUser.save();
 		const payload:IPayLoad = { id: userSaved.id, email: userSaved.email , type: 'access'};
-		await this.authServices.setCookies(payload, res);
+		const tokens = await this.authServices.setTokens(payload, req ,res);
+		if (tokens === null) throw new ServerError('No token',500);
 
 		return res.json({
 			id: userSaved.id,
@@ -42,7 +44,8 @@ class AuthFacade {
 
 			if (!passwordFound ) throw new ServerError('Password not found - User or password incorrect ' , 400);//return res.status(400).json({ message: 'Password not found - User or password incorrect ' });
 			const payload:IPayLoad = { id: userFound.id, email: userFound.email , type: 'access'};
-			await this.authServices.setTokens(payload, req);
+			const tokens = await this.authServices.setTokens(payload, req, res);
+			if (tokens === null) throw new ServerError('No token',500);
 
 			return res.json({
 				id: userFound.id,
@@ -77,11 +80,12 @@ class AuthFacade {
 	public async refreshToken (req: Request, res: Response): Promise<Response> {
 		const user = req.user as IUserSaved;
 		if (user === null || user.id === undefined) throw new ServerError ('User not found',401); //res.status(401).json({ message: 'User not found' });
-		const tokenAccess =  await this.authServices.createToken({ id: user.id, email: user.email, type: 'access' });
-		const tokenRefresh =  await this.authServices.createToken({ id: user.id, email: user.email, type: 'refresh' });
+		const tokens = await this.authServices.setTokens({ id: user.id, email: user.email, type: 'access' }, req,res);
+		if (tokens === null) throw new ServerError('No token',500);
 		return res.status(200).json({
-			tokenAccess,
-			tokenRefresh
+			tokenAccess: req.headers.authorization,
+			tokenRefresh: req.headers['x-token']
 		});
 	}
+
 } export default new AuthFacade();
