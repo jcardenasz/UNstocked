@@ -7,6 +7,7 @@ export class Config{
 	private JWT_REFRESH_SECRET: string;
 	private MONGODB_USER: string;
 	private MONGODB_PASSWORD: string;
+	private FORGOT_PASSWORD_KEY: string;
 
 	constructor() {
 		dotenv.config();
@@ -16,6 +17,7 @@ export class Config{
 		this.PORT = parseInt(process.env.PORT || "1000",10);
 		this.JWT_SECRET = process.env.JWT_SECRET || "";
 		this.JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "";
+		this.FORGOT_PASSWORD_KEY = process.env.FORGOT_PASSWORD_KEY || "";
 	}
 
 	public getURI(): string {
@@ -31,6 +33,9 @@ export class Config{
 	}
 	public getJWT_REFRESH_SECRET(): string {
 		return this.JWT_REFRESH_SECRET;
+	}
+	public getFORGOT_PASSWORD_KEY(): string{
+		return this.FORGOT_PASSWORD_KEY;
 	}
 }
 

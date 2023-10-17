@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { IPayLoad, IUser } from '../dtos/Iuser.dto';
 import UserModel from '../models/users.model';
 import { AuthServices  } from '../services/auth.services';
+import { MailerService } from '../services/mailer.services';
 
 class AuthFacade {
 	private readonly authServices = new AuthServices;
@@ -76,5 +77,18 @@ class AuthFacade {
 		}catch(error){
 			return res.status(500).json({ message: error });
 		}
+	}
+
+	public async forgotPassword (req: Request, res:Response): Promise<Response> {
+		const {email} = req.body;
+		const userFound = await UserModel.findOne({ email });
+		if (userFound === null) return res.status(400).json({ message: 'User not found' });
+		const payload:IPayLoad = { id: userFound.id, email: userFound.email };
+		const passwordChangeKey = this.authServices.createToken(payload);
+
+		//send email with password change link.
+		const mailerService = new MailerService;
+		await mailerService.sendEmail(userFound.email, passwordChangeKey);
+		return res.status(200).json({message: 'hola mundo'});
 	}
 } export default new AuthFacade();
