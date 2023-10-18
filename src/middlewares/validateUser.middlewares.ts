@@ -8,6 +8,7 @@ export const authRequired = async (req: Request, res: Response, next: NextFuncti
 
 	const id = authServices.decodedToken(req);
 	if (id === null) return res.status(401).json({ message: 'No token or no id' });
+
 	const userFound = await UserModel.findById(id);
 	if (userFound === null) return res.status(401).json({message:"No user found"});
 	req.user = {

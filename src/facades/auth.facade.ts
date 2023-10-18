@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { IPayLoad, IUser } from '../dtos/Iuser.dto';
+import { IUser } from '../dtos/Iuser.dto';
+import { IPayLoad } from '../dtos/IpayLoad.dto';
 import UserModel from '../models/users.model';
 import { AuthServices  } from '../services/auth.services';
 import { MailerService } from '../services/mailer.services';

@@ -1,8 +1,7 @@
 import { Request, Response,NextFunction } from "express";
-import { ZodError } from "zod";
-import { loginSchema, registerSchema } from "../schemas/auth.schema";
+import { SomeZodObject, ZodError } from "zod";
 
-export const validateSchema = (schema: typeof registerSchema | typeof loginSchema ) =>  (req: Request, res: Response, next: NextFunction): Response | void =>{
+export const validateSchema = (schema: SomeZodObject) =>  (req: Request, res: Response, next: NextFunction): Response | void =>{
 	try{
 		schema.parse(req.body);
 		return next();
