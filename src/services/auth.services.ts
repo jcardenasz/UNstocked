@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import {Config} from '../config/config';
 import { Request, Response} from 'express';
-import { IPayLoad } from '../dtos/Iuser.dto';
+import { IPayLoad } from '../dtos/IpayLoad.dto';
 import { ObjectId } from 'mongoose';
 import bcrypt from 'bcrypt';
 
