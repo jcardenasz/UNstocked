@@ -85,13 +85,15 @@ class AuthFacade {
 		const userFound = await UserModel.findOne({ email });
 		if (userFound === null) return res.status(400).json({ message: 'User not found' });
 		const payload:IPayLoad = { id: userFound.id, email: userFound.email };
-		const passwordChangeKey = this.authServices.createForgotPasswordToken(payload);
+		const passwordChangeKey = await this.authServices.createForgotPasswordToken(payload);
 		//send email with password change link.
 		const mailerService = new MailerService;
-		passwordChangeKey.then((passwordChangeKey) => {
-			mailerService.sendEmail(userFound.email, passwordChangeKey);
-		});
+		await mailerService.sendEmail(userFound.email, passwordChangeKey);
+		// passwordChangeKey.then((passwordChangeKey) => {
+		// 	mailerService.sendEmail(userFound.email, passwordChangeKey);
+		// });
 		//mailerService.sendEmail(userFound.email, passwordChangeKey);
-		return res.status(200).json({message: '¡Correo enviado exitosamente!, token:'});
+		//return res.status(200).json({message: '¡Correo enviado exitosamente!, token:'});
+		return userFound.updateOne({resetLink: passwordChangeKey});
 	}
 } export default new AuthFacade();

@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		require: true
 	}
+	// },
+	// resetLink: {
+	// 	data: String,
+	// 	default: ''
+	// }
 }, {
 	timestamps: true
 });

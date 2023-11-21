@@ -13,7 +13,7 @@ export class Config{
 		dotenv.config();
 		this.MONGODB_USER = process.env.MONGODB_USER || "";
 		this.MONGODB_PASSWORD = process.env.MONGODB_PASSWORD || "";
-		this.URI = `mongodb+srv://${this.MONGODB_USER}:${this.MONGODB_PASSWORD}@cluster0.ymfpquo.mongodb.net/?retryWrites=true&w=majority`;
+		this.URI = `mongodb+srv://${this.MONGODB_USER}:${this.MONGODB_PASSWORD}@cluster0.ymfpquo.mongodb.net/unstocked?retryWrites=true&w=majority`;
 		this.PORT = parseInt(process.env.PORT || "1000",10);
 		this.JWT_SECRET = process.env.JWT_SECRET || "";
 		this.JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "";

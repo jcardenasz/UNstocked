@@ -36,5 +36,5 @@ const productSchema = new mongoose.Schema({
 }, {
 	timestamps: true
 });
-const ProductModel = mongoose.model<IProductSaved>('Product', productSchema);
+const ProductModel = mongoose.model<IProductSaved>('product', productSchema);
 export default ProductModel;
