@@ -37,7 +37,7 @@ class TransactionFacade {
 		if (currentUser === null) return res.status(401).send('Unauthorized');
 
 		const transaction = await SaleModel.find({
-			userId: currentUser.id
+			_id: req.params.id,
 		});
 
 		if (transaction !== null && transaction.length !== 0) return res.status(500).send('This sale already exists');
@@ -59,7 +59,7 @@ class TransactionFacade {
 		if (currentUser === null) return res.status(401).send('Unauthorized');
 
 		const transaction = await ExpenseModel.find({
-			userId: currentUser?.id,
+			_id: req.params.id,
 		});
 
 		if (transaction !== null && transaction.length !== 0) return res.status(500).send('This expense already exists');

@@ -14,16 +14,21 @@ const saleSchema = new mongoose.Schema({
 	},
 	date: {
 		type: Date,
-		require: true,
+		require: false,
 		default: Date.now,
 	},
 	PaymentMethod: {
 		type: ['efectivo', 'tarjeta', 'transferencia'],
-		require: true,
+		require: false,
 		trim: true,
 	},
 	saleAmount: {
 		type: Number,
+	},
+	userId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'UserModel',
+		require: true
 	}
 }); const SaleModel = mongoose.model<ISaleSaved>('Sale', saleSchema);
 export default SaleModel;

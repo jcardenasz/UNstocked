@@ -14,7 +14,7 @@ const transactionSchema = new mongoose.Schema({
 	},
 	date: {
 		type: Date,
-		require: true,
+		require: false,
 		default: Date.now,
 	},
 	PaymentMethod: {
@@ -28,10 +28,15 @@ const transactionSchema = new mongoose.Schema({
 	category: {
 		type: [mongoose.Schema.Types.ObjectId],
 		ref: "CategoryModel",
-		require: true,
+		require: false,
 	},
 	supplier: {
 		type: String,
+	},
+	userId: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'UserModel',
+		require: true
 	}
 }); const ExpenseModel = mongoose.model<IExpenseSaved>('Expense', transactionSchema);
 export default ExpenseModel;
