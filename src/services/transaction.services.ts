@@ -1,6 +1,7 @@
 import { IUser } from "../dtos/Iuser.dto";
 import { Request } from "express";
-import TransactionModel from "../models/transactions.model";
+import SaleModel from "../models/sale.model";
+import ExpenseModel from "../models/expense.model";
 
 export class TransactionServices {
 	public validateUser(req: Request): IUser | null {
@@ -9,13 +10,22 @@ export class TransactionServices {
 		return currentUser;
 	}
 
-	public async findTransaction(req: Request, currentUser:IUser): Promise< unknown |null> {
-		const product = await TransactionModel.find({
+	public async findSale(req: Request, currentUser:IUser): Promise< unknown |null> {
+		const transaction = await SaleModel.find({
 			_id: req.params.id,
 			userId: currentUser.id
 		});
-		if (product === null || product.length === 0 ) return null;
-		return product ;
+		if (transaction === null || transaction.length === 0 ) return null;
+		return transaction ;
+	}
+
+	public async findExpense(req: Request, currentUser:IUser): Promise< unknown |null> {
+		const transaction = await ExpenseModel.find({
+			_id: req.params.id,
+			userId: currentUser.id
+		});
+		if (transaction === null || transaction.length === 0 ) return null;
+		return transaction ;
 	}
 }
 
