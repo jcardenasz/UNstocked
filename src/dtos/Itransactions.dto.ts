@@ -5,7 +5,7 @@ export interface ITransaction {
   _id: ObjectId;
   description: string;
   date: Date;
-  paymentMethod: string;
+  paymentMethod: PaymentMethod;
 }
 
 export interface ISale extends ITransaction {
@@ -29,3 +29,5 @@ export interface IExpenseSaved extends IExpense {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type PaymentMethod = "tarjeta" | "efectivo" | "transferencia";
