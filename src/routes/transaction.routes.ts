@@ -13,7 +13,7 @@ transactionRouter.get("/gSale/:id",authRequired,transactionController.getSale); 
 transactionRouter.get("/gExpense/:id",authRequired,transactionController.getExpense); //SIRVE
 transactionRouter.post("/cSale",authRequired,validateSchema(saleSchema),transactionController.createSale); //SIRVE falta cosas
 transactionRouter.post("/cExpense",authRequired,validateSchema(expenseSchema),transactionController.createExpense); //SIRVE falta cosas
-transactionRouter.patch("/uSale/:id",authRequired,validateSchema(saleSchema),transactionController.updateSale); //sin probar
-transactionRouter.patch("/uExpense/:id",authRequired,validateSchema(expenseSchema),transactionController.updateExpense); //sin probar
+transactionRouter.put("/uSale/:id",authRequired,validateSchema(saleSchema),transactionController.updateSale); //sin probar
+transactionRouter.put("/uExpense/:id",authRequired,validateSchema(expenseSchema),transactionController.updateExpense); //sin probar
 
 export default transactionRouter;

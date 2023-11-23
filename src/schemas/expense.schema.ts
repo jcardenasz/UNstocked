@@ -3,7 +3,7 @@ import {z} from "zod";
 export const expenseSchema = z.object({
 	name: z.string({
 		required_error: 'Name of the transaction is required'
-	}).min(2).max(300),
+	}).max(300),
 	description: z.string({
 		required_error: 'Description of the transaction is required'
 	}).min(2).max(300),

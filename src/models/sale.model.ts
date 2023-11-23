@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import { ISaleSaved } from '../dtos/Itransactions.dto';
-import { PaymentMethod } from '../dtos/Itransactions.dto';
 
 const saleSchema = new mongoose.Schema({
 	name: {
@@ -19,7 +18,7 @@ const saleSchema = new mongoose.Schema({
 		default: Date.now,
 	},
 	PaymentMethod: {
-		type: PaymentMethod,
+		type: String,
 		require: true,
 		trim: true,
 	},

@@ -32,7 +32,7 @@ class TransactionFacade {
 	}
 
 	public async createSale(req: Request, res: Response): Promise<Response> {
-		const { description, paymentMethod, date, saleAmount }:ISale = req.body;
+		const { name, description, paymentMethod, date, saleAmount }:ISale = req.body;
 		const currentUser = this.transactionServices.validateUser(req);
 		if (currentUser === null) return res.status(401).send('Unauthorized');
 
@@ -43,6 +43,7 @@ class TransactionFacade {
 		if (transaction !== null && transaction.length !== 0) return res.status(500).send('This sale already exists');
 
 		const newSale = new SaleModel({
+			name,
 			description,
 			paymentMethod,
 			date,
