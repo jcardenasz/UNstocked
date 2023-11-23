@@ -2,11 +2,18 @@ import jwt from 'jsonwebtoken';
 import {Config} from '../config/config';
 import { Request, Response} from 'express';
 import { IPayLoad } from '../dtos/IpayLoad.dto';
+import { IUser } from '../dtos/Iuser.dto';
 import { ObjectId } from 'mongoose';
 import bcrypt from 'bcrypt';
 
 export class AuthServices {
 	private readonly config = new Config;
+
+	public validateUser(req: Request): IUser | null {
+		const currentUser: IUser | undefined = req.user as IUser;
+		if (currentUser === undefined) return null;
+		return currentUser;
+	}
 
 	public async createToken (payload: object): Promise<string | undefined> {
 		const create: string | undefined = await new Promise((resolve, reject) => {
@@ -52,13 +59,13 @@ export class AuthServices {
 		return id;
 	}
 
-	public async encodedPassword (password:string, res: Response): Promise<Response | string> {
-		try{
+	public async encodedPassword(password: string): Promise<string> {
+		try {
 			const salt = await bcrypt.genSalt(10);
-			const hashPassword = await bcrypt.hash(password, salt);
-			return hashPassword;
-		}catch(error){
-			throw res.status(500).json({message:error});
+			const hashedPassword = await bcrypt.hash(password, salt);
+			return hashedPassword;
+		}	catch (error) {
+			throw new Error('Error hashing password');
 		}
 	}
 
@@ -91,5 +98,20 @@ export class AuthServices {
 		);
 		return create;
 	}
+	//Esta función es para validar el token de reseteo de contraseña.
+	//Si el token es válido, devuelve el payload, si no, devuelve false.
+	//util para cuando se haga la validación del token de usuario para dejarlo cambiar contraseña.
 
+	public async validateForgotPasswordToken(token: string): Promise<boolean> {
+		const forgotPasswordKey = process.env.FORGOT_PASSWORD_KEY;
+		if (!forgotPasswordKey) {
+			throw new Error('FORGOT_PASSWORD_KEY is not defined in the environment');
+		}
+		try {
+			jwt.verify(token, forgotPasswordKey) as IPayLoad;
+			return true;
+		}	catch (error) {
+			throw new Error('500. Error with forgotPassword token');
+		}
+	}
 }

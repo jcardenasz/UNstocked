@@ -13,7 +13,7 @@ class AuthFacade {
 		const existingUser = await UserModel.findOne({ email });
 		if (existingUser !== null) return res.status(500).send('User already exists');
 
-		const hashPassword = await this.authServices.encodedPassword(password, res);
+		const hashPassword = await this.authServices.encodedPassword(password);
 		const newUser = new UserModel({
 			username,
 			email,
@@ -85,11 +85,48 @@ class AuthFacade {
 		const userFound = await UserModel.findOne({ email });
 		if (userFound === null) return res.status(400).json({ message: 'User not found' });
 		const payload:IPayLoad = { id: userFound.id, email: userFound.email };
-		const passwordChangeKey = this.authServices.createToken(payload);
-
+		const passwordChangeKey = await this.authServices.createForgotPasswordToken(payload);
 		//send email with password change link.
 		const mailerService = new MailerService;
 		await mailerService.sendEmail(userFound.email, passwordChangeKey);
-		return res.status(200).json({message: 'hola mundo'});
+		// passwordChangeKey.then((passwordChangeKey) => {
+		// 	mailerService.sendEmail(userFound.email, passwordChangeKey);
+		// });
+		//mailerService.sendEmail(userFound.email, passwordChangeKey);
+		//return res.status(200).json({message: '¡Correo enviado exitosamente!, token:'});
+		userFound.updateOne({resetLink: passwordChangeKey});
+		//lógica para condicionar el uso de la pagina de reset password
+		return res.status(200).json({message: '¡Correo enviado exitosamente!'});
+	}
+	//Esta función es para validar el token de reseteo de contraseña.
+	//Es necesario aplicarlo al front. Funcional
+	public async resetPassword(req: Request, res: Response): Promise<Response> {
+		const { resetLink, newPassword } = req.body;
+		const token = resetLink.split('/').pop();
+		let userId;
+		if (token) {
+			// If the token is a password reset token
+			userId = await this.authServices.validateForgotPasswordToken(token);
+			if (!userId) return res.status(498).json({ message: 'Invalid token' });
+		} else {
+			// If the user is already logged in
+			const currentUser = this.authServices.validateUser(req);
+			if (currentUser === null) return res.status(401).json({ message: 'Unauthorized' });
+			userId = currentUser.id;
+		}
+
+		try {
+			const user = await UserModel.findById(userId);
+			if (user === null) return res.status(501).json({ message: 'User not found' });
+			// Hash the new password and update the user's password
+			const hashedPassword = await this.authServices.encodedPassword(newPassword);
+			user.password = hashedPassword;
+			await user.save();
+
+			return res.status(200).json({ message: 'Password reset successful' });
+		}
+		catch (err) {
+			return res.status(500).json({ message: 'error resetting your password' });
+		}
 	}
 } export default new AuthFacade();
