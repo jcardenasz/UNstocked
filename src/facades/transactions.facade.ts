@@ -144,6 +144,15 @@ class TransactionFacade {
 	//No es necesario borrar una transacción
 	/*
   	public async deleteTransaction(req: Request, res: Response): Promise<Response> {
+		const currentUser = this.transactionServices.validateUser(req);
+		if (currentUser === null) return res.status(401).send('Unauthorized');
+
+		const transaction = await this.transactionServices.findSale(req, currentUser);
+		if (transaction === null) return res.status(500).send('Transaction not found');
+
+		const deletedTransaction = await SaleModel.deleteOne({ _id: req.params.id });
+		if (deletedTransaction === null) return res.status(500).send('Transaction not found');
+		return res.json(deletedTransaction);
 	}
 	*/
 } export default new TransactionFacade();
