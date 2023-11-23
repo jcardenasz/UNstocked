@@ -11,20 +11,20 @@ export class TransactionServices {
 	}
 
 	public async findSale(req: Request, currentUser:IUser): Promise< unknown |null> {
-		const transaction = await SaleModel.find({
+		const transaction = await SaleModel.findOne({
 			_id: req.params.id,
 			userId: currentUser.id
 		});
-		if (transaction === null || transaction.length === 0 ) return null;
+		if (transaction === null) return null;
 		return transaction ;
 	}
 
 	public async findExpense(req: Request, currentUser:IUser): Promise< unknown |null> {
-		const transaction = await ExpenseModel.find({
+		const transaction = await ExpenseModel.findOne({
 			_id: req.params.id,
 			userId: currentUser.id
 		});
-		if (transaction === null || transaction.length === 0 ) return null;
+		if (transaction === null) return null;
 		return transaction ;
 	}
 }

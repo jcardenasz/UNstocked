@@ -26,4 +26,8 @@ class AuthController {
 		return authFacade.forgotPassword(req, res);
 	}
 
+	public resetPassword (req: Request, res: Response): Promise<Response> {
+		return authFacade.resetPassword(req, res);
+	}
+
 } export default new AuthController();
