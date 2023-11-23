@@ -5,7 +5,7 @@ export interface ITransaction {
   _id: ObjectId;
   description: string;
   date: Date;
-  paymentMethod: ['efectivo', 'tarjeta', 'transferencia'];
+  paymentMethod: PaymentMethod;
 }
 
 export interface ISale extends ITransaction {
@@ -29,3 +29,8 @@ export interface IExpenseSaved extends IExpense {
   updatedAt: Date;
 }
 
+export enum PaymentMethod {
+  tarjeta = 'tarjeta',
+  efectivo = 'efectivo',
+  transferencia = 'transferencia',
+}
