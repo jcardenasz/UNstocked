@@ -46,7 +46,9 @@ class AuthFacade {
 			return res.json({
 				id: userFound.id,
 				username: userFound.username,
-				email: userFound.email
+				email: userFound.email,
+				token: userFound.token,
+				refreshToken: userFound.refreshToken
 			});
 		} catch (error) {
 			return res.status(500).json({ message: error });

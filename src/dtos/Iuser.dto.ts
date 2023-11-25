@@ -6,6 +6,8 @@ export interface IUser {
   username: string
   email: string
   password: string
+  token:string
+  refreshToken:string
 }
 export interface IUserSaved extends IUser {
   createdAt: AudioTimestamp
