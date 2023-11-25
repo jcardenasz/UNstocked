@@ -38,7 +38,7 @@ export class AuthServices {
 				payload,
 				this.config.getJWT_REFRESH_SECRET(),
 				{
-					expiresIn: '1d'
+					expiresIn: '7d'
 				},
 				(err, token) => {
 					if (err !== null) reject(err);
