@@ -20,7 +20,7 @@ export class App {
 		this.app.use(morgan('dev'));
 		this.app.use(cors({
 			origin: 'http://localhost:3000', // replace with your frontend origin
-			methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
+			methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT', 'OPTIONS'],
 			allowedHeaders: ['Content-Type', 'Authorization'],
 			credentials: true,
 		}));
