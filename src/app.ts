@@ -18,7 +18,12 @@ export class App {
 
 	private initMiddlewares(): void {
 		this.app.use(morgan('dev'));
-		this.app.use(cors());
+		this.app.use(cors({
+			origin: 'http://localhost:3000', // replace with your frontend origin
+			methods: ['GET', 'POST', 'PATCH', 'DELETE', 'PUT'],
+			allowedHeaders: ['Content-Type', 'Authorization'],
+			credentials: true,
+		}));
 		this.app.use(express.urlencoded({ extended: false }));
 		this.app.use(express.json());
 		this.app.use(cookieParser());
