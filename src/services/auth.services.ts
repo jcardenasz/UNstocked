@@ -72,8 +72,8 @@ export class AuthServices {
 	public async setCookies (payload:IPayLoad,res:Response): Promise<Response> {
 		const tokenLogin = await this.createToken({ id: payload.id, email: payload.email });
 		const tokenRefresh = await this.createRefreshToken({ id: payload.id, email: payload.email });
-		res.cookie('token', tokenLogin, { httpOnly: true });
-		res.cookie('refreshToken', tokenRefresh), { httpOnly: true };
+		res.cookie('token', tokenLogin, { sameSite: 'none', secure:true, httpOnly: true });
+		res.cookie('refreshToken', tokenRefresh), { sameSite: 'none', secure:true, httpOnly: true };
 		return res;
 	}
 
