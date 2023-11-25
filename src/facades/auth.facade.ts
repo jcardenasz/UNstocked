@@ -22,7 +22,7 @@ class AuthFacade {
 
 		const userSaved = await newUser.save();
 		const payload:IPayLoad = { id: userSaved.id, email: userSaved.email };
-		await this.authServices.setCookies(payload, res);
+		await this.authServices.setCookies(payload, res, userSaved);
 
 		return res.json({
 			id: userSaved.id,
@@ -42,7 +42,7 @@ class AuthFacade {
 
 			if (!passwordFound ) return res.status(400).json({ message: 'Password not found - User or password incorrect ' });
 			const payload:IPayLoad = { id: userFound.id, email: userFound.email };
-			await this.authServices.setCookies(payload,res);
+			await this.authServices.setCookies(payload, res, userFound);
 			return res.json({
 				id: userFound.id,
 				username: userFound.username,

@@ -69,12 +69,15 @@ export class AuthServices {
 		}
 	}
 
-	public async setCookies (payload: IPayLoad, res: Response): Promise<Response> {
+	public async setCookies (payload: IPayLoad, res: Response, userFound: IUser): Promise<Response> {
 		const tokenLogin = await this.createToken({ id: payload.id, email: payload.email });
 		const tokenRefresh = await this.createRefreshToken({ id: payload.id, email: payload.email });
 		res.cookie('token', tokenLogin, { sameSite: 'none', secure: true });
 		res.cookie('refreshToken', tokenRefresh, { sameSite: 'none', secure: true });
-		return res;
+		if (userFound !== undefined && tokenLogin !== undefined && tokenRefresh !== undefined) {
+			userFound.token = tokenLogin;
+			userFound.refreshToken = tokenRefresh;
+		}return res;
 	}
 
 	public async compareCredential (password:string,userFoundPassword:string): Promise<boolean | unknown> {
