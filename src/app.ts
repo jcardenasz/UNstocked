@@ -4,6 +4,7 @@ import authrouter from './routes/auth.routes';
 import productsRoutes from './routes/products.routes';
 import categoriesRoutes from './routes/categories.routes';
 import transactionRoutes from './routes/transaction.routes';
+import businessRoutes from './routes/business.routes';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -43,6 +44,7 @@ export class App {
 		this.app.use('/api/products', productsRoutes);
 		this.app.use('/api/categories', categoriesRoutes);
 		this.app.use('/api/transactions', transactionRoutes);
+		this.app.use('/api/business', businessRoutes);
 	}
 
 	public getApp(): Application {
