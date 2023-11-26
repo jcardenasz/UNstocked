@@ -15,11 +15,7 @@ export const productSchema = z.object({
 	}).url({
 		message: 'Link is not valid'
 	}),
-	tags: z.array(z.string({
-		required_error: 'Tags is required'
-	}).min(2).max(20)).min(1, {
-		message: 'Must have at least 1 tag'
-	}).max(15, {
-		message: 'Must have at most 10 tags'
-	})
+	price: z.number({
+		required_error: "Price is required"
+	}).int().nonnegative(),
 });

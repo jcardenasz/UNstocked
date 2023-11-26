@@ -16,7 +16,7 @@ class ProductFacade {
 		return res.json(products);
 	}
 	public async createProduct (req: Request, res: Response): Promise<Response> {
-		const { name, description,stock, picture,tags }:IProduct = req.body;
+		const { name, description,stock, picture, price }:IProduct = req.body;
 		const currentUser = this.productServices.validateUser(req);
 		if (currentUser === null) return res.status(401).send('Unauthorized');
 
@@ -31,7 +31,7 @@ class ProductFacade {
 			description,
 			stock,
 			picture,
-			tags,
+			price,
 			userId: currentUser?.id
 		});
 		const productSaved = await newProduct.save();
@@ -61,7 +61,7 @@ class ProductFacade {
 	}
 
 	public async updateProduct (req: Request, res: Response):Promise<Response> {
-		const { name, description,stock, picture, tags }:IProduct = req.body;
+		const { name, description,stock, picture, price }:IProduct = req.body;
 		const currentUser = this.productServices.validateUser(req);
 		if (currentUser === null) return res.status(401).send('Unauthorized');
 
@@ -73,7 +73,7 @@ class ProductFacade {
 			description,
 			stock,
 			picture,
-			tags,
+			price,
 			userId: currentUser.id
 		},{
 			new: true

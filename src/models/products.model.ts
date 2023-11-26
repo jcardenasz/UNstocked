@@ -23,8 +23,8 @@ const productSchema = new mongoose.Schema({
 		require: true,
 		trim: true
 	},
-	tags: {
-		type: [String],
+	price: {
+		type: Number,
 		require: true,
 		trim: true
 	},
