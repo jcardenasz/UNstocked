@@ -22,7 +22,7 @@ export class App {
 			// origin: 'http://localhost:3000',
 			// origin: 'https://u-nstocked-bmb5.vercel.app/api',
 			origin: (origin, callback) => {
-				const allowedOrigins = ['http://localhost:3000', 'https://u-nstocked-bmb5.vercel.app/api', "https://unstocked-fe.vercel.app/api", "https://unstocked-fe.vercel.app"];
+				const allowedOrigins = ['http://localhost:3000', 'https://u-nstocked-bmb5.vercel.app/api', "https://unstocked-fe.vercel.app/api", "https://unstocked-fe.vercel.app", "https://unstocked-27shsmirj-jcardenaszs-projects.vercel.app", "https://unstocked-fe-git-main-jcardenaszs-projects.vercel.app"];
 				if (!origin || allowedOrigins.indexOf(origin) !== -1) {
 					callback(null, true);
 				} else {
