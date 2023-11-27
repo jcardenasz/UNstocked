@@ -18,4 +18,7 @@ export const productSchema = z.object({
 	price: z.number({
 		required_error: "Price is required"
 	}).int().nonnegative(),
+	category: z.string({
+		required_error: 'Category is required'
+	}).min(2).max(300),
 });

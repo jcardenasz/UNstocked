@@ -7,6 +7,7 @@ export interface IProduct {
   stock: number
   picture: string
   price: number
+  category: string
   userId: ObjectId
 }
 export interface IProductSaved extends IProduct {
