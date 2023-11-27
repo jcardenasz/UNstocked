@@ -24,6 +24,8 @@ const transactionSchema = new mongoose.Schema({
 	},
 	expenseAmount: {
 		type: Number,
+		require: true,
+		trim:true,
 	},
 	category: {
 		type: [mongoose.Schema.Types.ObjectId],

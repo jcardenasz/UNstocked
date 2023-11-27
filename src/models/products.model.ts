@@ -28,6 +28,11 @@ const productSchema = new mongoose.Schema({
 		require: true,
 		trim: true
 	},
+	category: {
+		type: String,
+		require: true,
+		trim: true
+	},
 	userId: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: 'UserModel',
