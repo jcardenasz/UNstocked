@@ -17,7 +17,7 @@ const saleSchema = new mongoose.Schema({
 		require: false,
 		default: Date.now,
 	},
-	PaymentMethod: {
+	paymentMethod: {
 		type: String,
 		require: true,
 		trim: true,
